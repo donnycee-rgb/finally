@@ -1,5 +1,6 @@
 // The lock: three date wheels, DD / MM / YYYY.
 import { bowSVG, esc } from './art.js';
+import { kittySVG, winkLoop } from './kitty.js';
 
 const pad = (n, len = 2) => String(n).padStart(len, '0');
 
@@ -37,6 +38,7 @@ export function mount(ctx) {
         <circle cx="150" cy="222" r="128" fill="url(#bodyGrad)" stroke="var(--pink)" stroke-width="2"/>
         <circle cx="150" cy="222" r="116" fill="none" stroke="var(--line)" stroke-width=".8" stroke-dasharray="2 6" opacity=".55"/>
       </svg>
+      <div class="lock-kitty">${kittySVG({ wink: true })}</div>
       <div class="lock-bow">${bowSVG()}</div>
       <div class="wheels"></div>
     </div>
@@ -52,6 +54,35 @@ export function mount(ctx) {
   const reply = inner.querySelector('.lock-reply');
   const openBtn = inner.querySelector('.lock-open');
   const escapeBtn = inner.querySelector('.lock-escape');
+  const kitty = inner.querySelector('.lock-kitty');
+
+  // ---------- Kitty hides behind the lock and peeks out ----------
+  const HIDDEN = { yPercent: 0, xPercent: 0, rotation: -6, opacity: reduced ? 0 : 1 };
+  const PEEK = { yPercent: -150, xPercent: 12, rotation: 12, opacity: 1 };
+  gsap.set(kitty, HIDDEN);
+  let peekTl = null;
+  let wink = null;
+  function peek({ stay = 1.6, shake = false, forever = false } = {}) {
+    if (peekTl) peekTl.kill();
+    peekTl = gsap.timeline();
+    if (reduced) {
+      peekTl.set(kitty, { yPercent: PEEK.yPercent, xPercent: PEEK.xPercent, rotation: 0 })
+        .to(kitty, { opacity: 1, duration: 0.4 });
+      if (!forever) peekTl.to(kitty, { opacity: 0, duration: 0.4 }, `+=${stay}`);
+      return;
+    }
+    peekTl.to(kitty, { ...PEEK, duration: 0.7, ease: 'back.out(1.6)' });
+    if (shake) {
+      peekTl.to(kitty, { keyframes: { rotation: [12, -4, 14, -2, 10] }, duration: 0.9, ease: 'sine.inOut' });
+    }
+    if (forever) {
+      peekTl.to(kitty, { rotation: 6, duration: 1.6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    } else {
+      peekTl.to(kitty, { ...HIDDEN, duration: 0.6, ease: 'power2.in' }, `+=${stay}`);
+    }
+  }
+  // a shy first peek, just to say hello
+  const hello = gsap.delayedCall(2.2, () => peek({ stay: 1.4 }));
 
   const chevron = (dir) =>
     `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${dir === 'up' ? 'M6 15 L12 9 L18 15' : 'M6 9 L12 15 L18 9'}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -140,6 +171,8 @@ export function mount(ctx) {
     if (!reduced) {
       gsap.fromTo(lockEl, { x: 0 }, { keyframes: { x: [-9, 8, -6, 4, -2, 0] }, duration: 0.5, ease: 'sine.inOut' });
     }
+    hello.kill();
+    peek({ shake: true, stay: wrongCount >= 3 ? 2.6 : 1.4 });
     if (wrongCount >= 3) hint.classList.add('prominent');
     if (wrongCount >= 6 && escapeBtn.hidden) {
       escapeBtn.hidden = false;
@@ -153,11 +186,14 @@ export function mount(ctx) {
     openBtn.disabled = true;
     escapeBtn.disabled = true;
     reply.textContent = '';
+    hello.kill();
+    peek({ forever: true });
+    wink = winkLoop(kitty.querySelector('svg'), { delay: 0.7, every: 1.2 });
     const tl = gsap.timeline({ onComplete: () => ctx.next() });
     tl.to(inner.querySelector('.shackle'), { y: -30, duration: reduced ? 0.3 : 0.9, ease: 'power2.out' })
       .to(inner.querySelector('.lock-glow'), { opacity: 0.55, duration: 0.8, ease: 'sine.inOut' }, '<0.2')
       .to(lockEl, { filter: 'drop-shadow(0 0 28px rgba(246,182,200,.55))', duration: 0.8 }, '<')
-      .to({}, { duration: 0.6 });
+      .to({}, { duration: 1.0 });
   }
 
   openBtn.addEventListener('click', () => {
@@ -167,5 +203,9 @@ export function mount(ctx) {
   });
   escapeBtn.addEventListener('click', open);
 
-  return () => {};
+  return () => {
+    hello.kill();
+    if (peekTl) peekTl.kill();
+    if (wink) wink.kill();
+  };
 }

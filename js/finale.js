@@ -1,5 +1,6 @@
 // The finale: Oui / Non (Non runs away).
 import { bowSVG, heartSVG, esc } from './art.js';
+import { kittySVG } from './kitty.js';
 
 export function mount(ctx) {
   const { inner, content, reduced, state } = ctx;
@@ -162,10 +163,11 @@ export function mount(ctx) {
     const count = reduced ? 14 : 40;
     for (let i = 0; i < count; i++) {
       const p = document.createElement('span');
-      const isBow = i % 3 === 0;
-      p.className = `particle ${isBow ? 'p-bow' : 'p-heart'}${!isBow && i % 2 ? ' white' : ''}`;
-      p.innerHTML = isBow ? bowSVG() : heartSVG();
-      const size = isBow ? 22 + Math.random() * 12 : 10 + Math.random() * 12;
+      const isKitty = i % 5 === 2;
+      const isBow = !isKitty && i % 3 === 0;
+      p.className = `particle ${isKitty ? 'p-kitty' : isBow ? 'p-bow' : 'p-heart'}${!isBow && !isKitty && i % 2 ? ' white' : ''}`;
+      p.innerHTML = isKitty ? kittySVG() : isBow ? bowSVG() : heartSVG();
+      const size = isKitty ? 30 + Math.random() * 14 : isBow ? 22 + Math.random() * 12 : 10 + Math.random() * 12;
       p.style.width = `${size}px`;
       layer.appendChild(p);
       const x = Math.random() * vw;

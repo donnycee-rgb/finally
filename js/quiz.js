@@ -1,5 +1,6 @@
 // The quiz: how well do you know us? Always 100%.
-import { bowSVG, esc, makeButton, reveal } from './art.js';
+import { esc, makeButton, reveal } from './art.js';
+import { kittySVG, winkLoop } from './kitty.js';
 
 export function mount(ctx) {
   const { inner, content, reduced } = ctx;
@@ -91,18 +92,21 @@ export function mount(ctx) {
     dots.forEach((d) => { d.classList.add('done'); d.classList.remove('now'); });
     stage.innerHTML = `
       <div class="quiz-score">
-        <div class="score-badge">${bowSVG()}</div>
+        <div class="score-badge">${kittySVG({ wink: true })}</div>
         <p class="score-big">${esc(C.score.big)}</p>
         <p class="score-small">${esc(C.score.small)}</p>
       </div>`;
     const sc = stage.querySelector('.quiz-score');
     const cont = ctx.continueButton(sc);
     gsap.timeline()
-      .fromTo(sc.querySelector('.score-badge'), { opacity: 0, scale: reduced ? 1 : 0.7 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' })
+      .fromTo(sc.querySelector('.score-badge'), { opacity: 0, scale: reduced ? 1 : 0.5, rotation: reduced ? 0 : -12 }, { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: reduced ? 'none' : 'back.out(1.7)' })
       .fromTo(sc.querySelector('.score-big'), { opacity: 0 }, { opacity: 1, duration: 0.8 }, '-=0.3')
       .fromTo(sc.querySelector('.score-small'), { opacity: 0 }, { opacity: 1, duration: 0.8 })
-      .add(() => cont.show());
+      .add(() => cont.show())
+      .add(() => { wink = winkLoop(sc.querySelector('.kitty'), { delay: 0.3, every: 3.2 }); });
   }
 
+  let wink = null;
   showQuestion(0);
+  return () => { if (wink) wink.kill(); };
 }

@@ -1,5 +1,6 @@
 // The letter: envelope floats down, seal cracks, paper unfolds, words write themselves.
 import { envelopeHTML, crackSeal, esc } from './art.js';
+import { kittySVG } from './kitty.js';
 
 export function mount(ctx) {
   const { inner, root, content, reduced } = ctx;
@@ -11,7 +12,7 @@ export function mount(ctx) {
     <div class="letter-dim" aria-hidden="true"></div>
     <div class="letter-stage">
       <button type="button" class="letter-env" aria-label="${esc(content.ui.tapToOpen)}">
-        ${envelopeHTML()}
+        ${envelopeHTML(`<span class="kitty-stamp"><span class="kitty-stamp-inner">${kittySVG()}</span></span>`)}
       </button>
       <p class="letter-tap" aria-hidden="true">${esc(content.ui.tapToOpen)}</p>
       <div class="paper" hidden>
@@ -55,7 +56,16 @@ export function mount(ctx) {
     intro.fromTo(envBtn, { rotation: -9 },
       { keyframes: { rotation: [-9, 7, -5, 3, -1, 0], easeEach: 'sine.inOut' }, duration: 3.4, ease: 'none' }, 0.2);
   }
-  intro.to(tap, { opacity: 1, duration: 0.8 }, '-=0.3');
+  // Kitty stamp gets pressed on once the envelope has landed
+  const stamp = env.querySelector('.kitty-stamp');
+  if (reduced) {
+    intro.fromTo(stamp, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+  } else {
+    intro.fromTo(stamp, { opacity: 0, scale: 1.8, rotation: -14 },
+      { opacity: 1, scale: 1, rotation: 6, duration: 0.55, ease: 'power3.in' }, '-=0.2')
+      .to(env, { y: 3, duration: 0.08, yoyo: true, repeat: 1, ease: 'sine.inOut' });
+  }
+  intro.to(tap, { opacity: 1, duration: 0.8 }, '-=0.1');
 
   envBtn.addEventListener('click', openLetter, { once: true });
 
