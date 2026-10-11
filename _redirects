@@ -1,0 +1,3 @@
+# If song.mp3 has not been added yet, answer with a small text file instead of a 404,
+# so the page logs no errors. The audio button stays hidden. (Ignored once song.mp3 exists.)
+/assets/audio/song.mp3  /assets/audio/README.txt  200

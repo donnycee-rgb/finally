@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>for Jackie 🤍</title>
+  <meta name="description" content="just because.">
+  <meta property="og:title" content="for Jackie 🤍">
+  <meta property="og:description" content="just because.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#070a1a">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2044%22%3E%3Cpath%20d%3D%22M30%2023%20L21%2041%20L26.5%2038.5%20L29%2043%20L33%2024%20Z%22%20fill%3D%22%23e2384d%22%2F%3E%3Cpath%20d%3D%22M34%2023%20L43%2041%20L37.5%2038.5%20L35%2043%20L31%2024%20Z%22%20fill%3D%22%23e2384d%22%2F%3E%3Cpath%20d%3D%22M32%2021%20C25%208%206%202%205%2014%20C4.5%2025%2020%2028%2032%2021%20Z%22%20fill%3D%22%23e2384d%22%2F%3E%3Cpath%20d%3D%22M32%2021%20C39%208%2058%202%2059%2014%20C59.5%2025%2044%2028%2032%2021%20Z%22%20fill%3D%22%23e2384d%22%2F%3E%3Crect%20x%3D%2227%22%20y%3D%2215%22%20width%3D%2210%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23c92a40%22%2F%3E%3C%2Fsvg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <main id="stage" aria-live="polite"></main>
+
+  <div id="transition" aria-hidden="true">
+    <svg viewBox="0 0 100 90" preserveAspectRatio="xMidYMid meet">
+      <path id="transition-heart" d="M50 84 C30 70 6 54 6 30 C6 15 17 6 29 6 C39 6 46 12 50 20 C54 12 61 6 71 6 C83 6 94 15 94 30 C94 54 70 70 50 84 Z"/>
+    </svg>
+  </div>
+
+  <button id="audio-pill" type="button" hidden>
+    <span class="disc" aria-hidden="true"></span>
+    <span class="audio-label"></span>
+  </button>
+  <audio id="song" preload="none" loop></audio>
+
+  <div id="openwhen-root"></div>
+</body>
+</html>
